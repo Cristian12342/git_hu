@@ -14,14 +14,14 @@ const modelViewer = document.getElementById('3dModel');
 const targetOverlay = document.getElementById('targetOverlay');
 const modelSelect = document.getElementById('modelSelect');
 const resetBtn = document.getElementById('resetBtn');
+const victoryModal = document.getElementById('victoryModal');
 
-// Referencias a los audios
+// Referencias de audio
 const shootSound = document.getElementById('shootSound');
 const hitSound = document.getElementById('hitSound');
 
 let moveTimer = null;
 
-// Reproducir sonido de disparo
 function playShootSound() {
   if (shootSound) {
     shootSound.currentTime = 0;
@@ -29,7 +29,6 @@ function playShootSound() {
   }
 }
 
-// Reproducir sonido de acierto/impacto
 function playHitSound() {
   if (hitSound) {
     hitSound.currentTime = 0;
@@ -37,7 +36,7 @@ function playHitSound() {
   }
 }
 
-// Mueve el objeto y ajusta la velocidad (mucho más rápido ahora)
+// Movimiento dinámico con velocidad aumentada y aceleración por salud baja
 function moveTarget() {
   const padding = 100;
   const maxX = window.innerWidth - viewerBox.clientWidth - padding;
@@ -48,32 +47,28 @@ function moveTarget() {
   const randomX = Math.floor(Math.random() * (maxX - minX) + minX);
   const randomY = Math.floor(Math.random() * (maxY - minY) + minY);
 
-  // NUEVA VELOCIDAD AUMENTADA:
-  // Con salud al 100% tardará 0.8 segundos. Con la vida baja, ¡tardará solo 0.25 segundos (extremadamente rápido)!
   const currentSpeed = 0.25 + (health / maxHealth) * 0.55; 
   viewerBox.style.transition = `left ${currentSpeed}s ease-in-out, top ${currentSpeed}s ease-in-out`;
 
   viewerBox.style.left = `${randomX}px`;
   viewerBox.style.top = `${randomY}px`;
 
-  // Reiniciar el temporizador según la nueva velocidad
   if (moveTimer) clearTimeout(moveTimer);
   moveTimer = setTimeout(moveTarget, currentSpeed * 1000);
 }
 
-// Disparo fallido en la página
+// Disparos fallidos en cualquier parte de la página
 document.body.addEventListener('click', (e) => {
-  if (e.target.closest('.controls') || e.target.closest('.hud')) return;
+  if (e.target.closest('.controls') || e.target.closest('.hud') || victoryModal.classList.contains('active')) return;
 
   shots++;
   shotsEl.textContent = shots;
   playShootSound();
 });
 
-// Acierto al Objeto 3D
+// Aciertos al objeto 3D
 targetOverlay.addEventListener('click', (e) => {
   e.stopPropagation();
-
   playHitSound();
 
   const rect = viewerBox.getBoundingClientRect();
@@ -103,22 +98,19 @@ targetOverlay.addEventListener('click', (e) => {
     showImpact(x, y);
     showDamageText(x, y, isCrit ? `-${damage} ¡CRÍTICO!` : `-${damage}`);
 
-    // Mover inmediatamente al recibir el impacto
     moveTarget();
 
     if (health <= 0) {
       setTimeout(() => {
-        alert('🎉 ¡Objetivo 3D neutralizado! +500 puntos');
+        victoryModal.classList.add('active');
         score += 500;
         scoreEl.textContent = score;
-        health = maxHealth;
-        updateHealthUI();
       }, 200);
     }
   }
 });
 
-// Cambio de modelo 3D
+// Cambio de modelo 3D desde el selector
 modelSelect.addEventListener('change', (e) => {
   modelViewer.src = e.target.value;
 });
@@ -160,9 +152,15 @@ function resetGame() {
   moveTarget();
 }
 
+function closeVictoryModal() {
+  victoryModal.classList.remove('active');
+  health = maxHealth;
+  updateHealthUI();
+  moveTarget();
+}
+
 resetBtn.addEventListener('click', resetGame);
 
-// Iniciar juego
 window.onload = () => {
   moveTarget();
 };

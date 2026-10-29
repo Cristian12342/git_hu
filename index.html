@@ -3,28 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juego de Disparo 3D -Cristian Arcos</title>
+  <title>Cyber Shooter 3D - Ing. Cristian Arcos</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-  <header>
-    <h1>Juego de Disparo al Objeto 3D</h1>
-    <p class="subtitle">Ejemplo didáctico de clase con HTML, CSS y Google &lt;model-viewer&gt; -Cristian Arcos</p>
+  <!-- Encabezado Estilo Misión Táctica / Cyber HUD -->
+  <header class="cyber-header">
+    <div class="header-badge">⚡ TACTICAL PROTOCOL V2.0</div>
+    <h1>CYBER SHOOTER 3D</h1>
+    <p class="subtitle">ARENA INTERACTIVA &bull; CRISTIAN ARCOS</p>
   </header>
 
-  <!-- Panel de Estadísticas / HUD -->
+  <!-- Panel de Estadísticas / HUD Izquierdo -->
   <div class="hud">
-    <div class="hud-card">Puntos: <span class="value" id="score">0</span></div>
-    <div class="hud-card">Disparos: <span class="value" id="shots">0</span></div>
-    <div class="hud-card">Aciertos: <span class="value" id="hits">0</span></div>
+    <div class="hud-card">
+      <span class="hud-icon">🏆</span> Puntos: <span class="value" id="score">0</span>
+    </div>
+    <div class="hud-card">
+      <span class="hud-icon">🔫</span> Disparos: <span class="value" id="shots">0</span>
+    </div>
+    <div class="hud-card">
+      <span class="hud-icon">🎯</span> Aciertos: <span class="value" id="hits">0</span>
+    </div>
   </div>
 
-  <!-- Barra de Salud del Objeto -->
+  <!-- Barra de Salud / Escudo Energético (Inferior) -->
   <div class="health-container">
-    <div style="display:flex; justify-content:space-between; margin-bottom: 4px; font-size: 0.85rem;">
-      <span>Salud del Objetivo</span>
+    <div class="health-info">
+      <span>🛡️ INTEGRIDAD DEL OBJETIVO</span>
       <span id="health-text">100 / 100</span>
     </div>
     <div class="health-bar-bg">
@@ -32,27 +40,34 @@
     </div>
   </div> 
 
-  <!-- Contenedor del Modelo 3D con movimiento dinámico -->
+  <!-- Contenedor del Modelo 3D -->
   <div class="viewer-box" id="viewerBox">
     <model-viewer id="3dModel" src="Nueva carpeta/football_ball.glb" auto-rotate camera-controls></model-viewer>
     <div class="target-overlay" id="targetOverlay" title="¡Haz clic aquí para disparar al objeto 3D!"></div>
   </div>
 
-  <!-- Botones y Selector de Objetos 3D -->
+  <!-- Botones y Selector de Objetos 3D (Derecha) -->
   <div class="controls">
-    <label for="modelSelect">Objeto 3D:</label>
+    <label for="modelSelect">⚙️ SELECTOR 3D:</label>
     <select id="modelSelect">
-      <option value="Nueva carpeta/football_ball.glb">⚽ Balón de Fútbol</option>
-      <option value="Nueva carpeta/pelota_peluda_con_ojos.glb">🛸 Pelota con ojos 3D</option>
-      
+      <option value="Nueva carpeta/football_ball.glb">⚽ Balón Cibernético</option>
+      <option value="Nueva carpeta/pelota_peluda_con_ojos.glb">🛸 Balon con Ojos</option>
     </select>
-    <button id="resetBtn">🔄 Reiniciar Juego</button>
+    <button id="resetBtn">🔄 REINICIAR MISIÓN</button>
   </div>
 
-  <!-- Elementos de Audio para el Juego -->
+  <!-- Pantalla de Victoria Estilizada (Modal) -->
+  <div class="victory-modal" id="victoryModal">
+    <div class="victory-content">
+      <h2>🏆 ¡OBJETIVO NEUTRALIZADO!</h2>
+      <p>Has completado la misión con éxito.</p>
+      <div class="victory-bonus">+500 PUNTOS DE BONIFICACIÓN</div>
+      <button onclick="closeVictoryModal()">CONTINUAR CAZA</button>
+    </div>
+  </div>
 
-  <audio id="shootSound" src="Nueva carpeta/Sonido_disparo.mp3 preload="auto"></audio>
-  <audio id="hitSound" src="Nueva carpeta/explosion.mp3" preload="auto"></audio>
+  <!-- Elementos de Audio -->
+  <audio id="shootSound" src="Nueva carpeta/Sonido_disparo.mp3" preload="auto"></audio>
 
   <!-- Enlaces a JS y Model-Viewer -->
   <script src="script.js"></script>
